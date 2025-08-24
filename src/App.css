@@ -5,7 +5,7 @@
 .App {
   text-align: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #228B22 0%, #006400 100%);
 }
 
 .App-header {
@@ -31,17 +31,62 @@
   min-height: calc(100vh - 120px);
 }
 
+.sidebar-toggle {
+  position: fixed;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 1001;
+  background: #667eea;
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+  background: #5a67d8;
+  transform: translateY(-50%) scale(1.1);
+}
+
 .app-container {
   display: flex;
   max-width: 1200px;
   margin: 0 auto;
   gap: 40px;
   align-items: flex-start;
+  transition: all 0.3s ease;
+}
+
+.app-container.sidebar-hidden {
+  gap: 0;
+  max-width: 100%;
+  height: calc(100vh - 120px);
 }
 
 .left-panel {
   flex: 1;
   min-width: 300px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.sidebar.visible {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .right-panel {
@@ -50,6 +95,19 @@
   flex-direction: column;
   align-items: center;
   position: relative;
+  transition: all 0.3s ease;
+}
+
+.app-container.sidebar-hidden .right-panel {
+  margin-left: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  align-items: center;
 }
 
 .name-input-container {
@@ -219,11 +277,17 @@
   gap: 20px;
 }
 
+.app-container.sidebar-hidden .wheel-container {
+  height: 100%;
+  justify-content: center;
+}
+
 .wheel-canvas {
   border-radius: 50%;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   background: white;
 }
+
 
 .spin-button {
   padding: 15px 30px;
@@ -354,6 +418,13 @@
   
   .left-panel {
     min-width: auto;
+  }
+  
+  .sidebar-toggle {
+    left: 10px;
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
   }
   
   .App-header h1 {

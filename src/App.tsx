@@ -14,6 +14,7 @@ const STORAGE_KEY = 'wheelOfNames_savedNames';
 function App() {
   const [names, setNames] = useState<Name[]>([]);
   const [winner, setWinner] = useState<string | null>(null);
+  const [sidebarVisible, setSidebarVisible] = useState<boolean>(true);
 
   useEffect(() => {
     const savedNames = localStorage.getItem(STORAGE_KEY);
@@ -40,6 +41,10 @@ function App() {
     setWinner(null);
   };
 
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -48,13 +53,17 @@ function App() {
       </header>
       
       <main className="App-main">
-        <div className="app-container">
-          <div className="left-panel">
+        <button className="sidebar-toggle" onClick={toggleSidebar}>
+          {sidebarVisible ? '←' : '→'}
+        </button>
+        
+        <div className={`app-container ${!sidebarVisible ? 'sidebar-hidden' : ''}`}>
+          <div className={`left-panel sidebar ${sidebarVisible ? 'visible' : 'hidden'}`}>
             <NameInput names={names} onNamesChange={handleNamesChange} />
           </div>
           
           <div className="right-panel">
-            <WheelOfNames names={names} onWinner={handleWinner} />
+            <WheelOfNames names={names} onWinner={handleWinner} sidebarHidden={!sidebarVisible} />
             
             {winner && (
               <div className="winner-modal">

@@ -9,6 +9,7 @@ interface Name {
 interface WheelOfNamesProps {
   names: Name[];
   onWinner: (winner: string) => void;
+  sidebarHidden?: boolean;
 }
 
 const colors = [
@@ -17,12 +18,32 @@ const colors = [
   '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
 ];
 
-const WheelOfNames: React.FC<WheelOfNamesProps> = ({ names, onWinner }) => {
+const WheelOfNames: React.FC<WheelOfNamesProps> = ({ names, onWinner, sidebarHidden = false }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
+  const [canvasSize, setCanvasSize] = useState({ width: 400, height: 400 });
 
   const includedNames = names.filter(name => name.isIncluded);
+
+  useEffect(() => {
+    const calculateCanvasSize = () => {
+      if (sidebarHidden) {
+        const viewportHeight = window.innerHeight;
+        const viewportWidth = window.innerWidth;
+        const availableHeight = viewportHeight - 200;
+        const maxSize = Math.min(availableHeight, viewportWidth * 0.8);
+        const size = Math.min(Math.max(maxSize, 400), 800);
+        setCanvasSize({ width: size, height: size });
+      } else {
+        setCanvasSize({ width: 400, height: 400 });
+      }
+    };
+
+    calculateCanvasSize();
+    window.addEventListener('resize', calculateCanvasSize);
+    return () => window.removeEventListener('resize', calculateCanvasSize);
+  }, [sidebarHidden]);
 
   const drawWheel = useCallback(() => {
     const canvas = canvasRef.current;
@@ -92,7 +113,7 @@ const WheelOfNames: React.FC<WheelOfNamesProps> = ({ names, onWinner }) => {
     ctx.lineTo(centerX + 15, centerY - radius - 5);
     ctx.closePath();
     ctx.fill();
-  }, [includedNames, rotation]);
+  }, [includedNames, rotation, canvasSize]);
 
   useEffect(() => {
     drawWheel();
@@ -146,8 +167,8 @@ const WheelOfNames: React.FC<WheelOfNamesProps> = ({ names, onWinner }) => {
     <div className="wheel-container">
       <canvas
         ref={canvasRef}
-        width={400}
-        height={400}
+        width={canvasSize.width}
+        height={canvasSize.height}
         className="wheel-canvas"
       />
       <button
