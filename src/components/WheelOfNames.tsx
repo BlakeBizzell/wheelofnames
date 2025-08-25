@@ -113,7 +113,7 @@ const WheelOfNames: React.FC<WheelOfNamesProps> = ({ names, onWinner, sidebarHid
     ctx.lineTo(centerX + 15, centerY - radius - 5);
     ctx.closePath();
     ctx.fill();
-  }, [includedNames, rotation, canvasSize]);
+  }, [includedNames, rotation]);
 
   useEffect(() => {
     drawWheel();
